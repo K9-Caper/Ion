@@ -29,14 +29,13 @@ val vaultEconomy = try {
 inline fun <reified T : Enum<T>> enumSetOf(vararg elems: T): EnumSet<T> =
 	EnumSet.noneOf(T::class.java).apply { addAll(elems) }
 
-/** Used for catching when a function that is not designed to be used async is being used async. */
 fun mainThreadCheck() {
-	if (!Bukkit.isPrimaryThread()) {
-		IonServer.slF4JLogger.warn(
-			"This function may be unsafe to use asynchronously.",
-			Throwable()
-		)
-	}
+	if (!Bukkit.isPrimaryThread()) IonServer.slF4JLogger.warn("function should not be called asynchronously", Throwable())
+}
+
+fun mainThreadCheck(block: () -> Unit) {
+	mainThreadCheck()
+	block()
 }
 
 val Chunk.minecraft: LevelChunk get() = (this as CraftChunk).handle

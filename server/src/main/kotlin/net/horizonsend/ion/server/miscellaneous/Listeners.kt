@@ -2,6 +2,7 @@ package net.horizonsend.ion.server.miscellaneous
 
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonWorld
+import net.horizonsend.ion.server.explosions.ExplosionReversal
 import net.horizonsend.ion.server.features.HyperspaceBeaconManager
 import net.horizonsend.ion.server.features.achievements.AchievementListeners
 import net.horizonsend.ion.server.features.blasters.BlasterListeners
@@ -26,6 +27,7 @@ val listeners = arrayOf(
 	ChunkLoadListener(IonServer),
 	CustomItemListeners(),
 	EdenFixer9000(),
+	ExplosionReversal,
 	GameplayTweaksListeners(),
 	HeadListener(),
 	HyperspaceBeaconManager,

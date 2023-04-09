@@ -9,7 +9,8 @@ import org.bukkit.World
 @Serializable
 data class ServerConfiguration(
 	val serverName: String? = null,
-	val beacons: List<HyperspaceBeacon> = listOf()
+	val beacons: List<HyperspaceBeacon> = listOf(),
+	val explosionReversalTicks: Int = 20 * 60 * 2 // 2 Minutes (assuming no lag)
 ) {
 	@Serializable
 	data class HyperspaceBeacon(
