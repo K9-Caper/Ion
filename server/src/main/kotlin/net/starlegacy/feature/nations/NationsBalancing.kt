@@ -36,10 +36,11 @@ object NationsBalancing : SLComponent() {
 			val radius: Int = 500,
 			val siegeMinDuration: Long = 25,
 			val siegeMaxDuration: Long = 60,
-			val siegeCost: Int = 1000,
+			val siegeCost: Int = 10000,
 			val daysPerSiege: Double = 0.5,
 			val siegerXP: Int = 2000,
-			val siegerAllyXP: Int = 1000
+			val siegerAllyXP: Int = 1000,
+			val deposit: Int = 20000
 		)
 	}
 

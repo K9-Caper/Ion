@@ -16,6 +16,7 @@ import net.starlegacy.database.schema.misc.SLPlayer
 import net.starlegacy.database.schema.misc.SLPlayerId
 import net.starlegacy.database.schema.nations.CapturableStation
 import net.starlegacy.database.schema.nations.CapturableStationSiege
+import net.starlegacy.database.schema.nations.Nation
 import net.starlegacy.database.schema.nations.NationRelation
 import net.starlegacy.database.slPlayerId
 import net.starlegacy.database.uuid
@@ -30,7 +31,10 @@ import net.starlegacy.util.Notify
 import net.starlegacy.util.Tasks
 import net.starlegacy.util.VAULT_ECO
 import net.starlegacy.util.colorize
+import net.starlegacy.util.depositMoney
 import net.starlegacy.util.getDurationBreakdown
+import net.starlegacy.util.getMoneyBalance
+import net.starlegacy.util.withdrawMoney
 import org.bukkit.Bukkit
 import org.bukkit.World
 import org.bukkit.entity.Player
@@ -124,6 +128,10 @@ object StationSieges : SLComponent() {
 
 		val playerName = SLPlayer.getName(siege.siegerId) ?: "UNKNOWN"
 		val stationName = CapturableStation.findPropById(siege.stationId, CapturableStation::name) ?: "??NULL??"
+		Bukkit.getPlayer(playerName)?.information("Deposit of ${NATIONS_BALANCE.capturableStation.deposit} is lost and sent to the sieged nation's balance")
+		val siegedNation = CapturableStation.findPropById(siege.stationId, CapturableStation::nation)
+		siegedNation?.let { Nation.deposit(it, NATIONS_BALANCE.capturableStation.deposit) }
+		siegedNation?.let { Notify.nation(it, "You won the siege, therefore you've obtained ${NATIONS_BALANCE.capturableStation.deposit}, from winning!") }
 
 		Notify.online("${GOLD}Siege of Space Station $stationName by $playerName has failed!")
 		Notify.discord("Siege of Space Station **$stationName** by **$playerName** has failed!")
@@ -138,6 +146,10 @@ object StationSieges : SLComponent() {
 
 		if (station.nation?.let { NationRelation.getRelationActual(nation, it).ordinal >= 5 } == true) {
 			return@asyncLocked player.userError("This station is owned by an ally of your nation.")
+		}
+
+		if (player.getMoneyBalance() < NATIONS_BALANCE.capturableStation.deposit){
+			return@asyncLocked player.userError("Error: Cannot fulfill deposit as you do not have ${NATIONS_BALANCE.capturableStation.deposit}")
 		}
 
 		val stationId = station.id
@@ -212,6 +224,9 @@ object StationSieges : SLComponent() {
 			capture(player, stationId)
 			return@asyncLocked
 		}
+
+		player.withdrawMoney(NATIONS_BALANCE.capturableStation.deposit)
+		player.information("${NATIONS_BALANCE.capturableStation.deposit} deposit payed from your balance, win the siege to get it back!")
 
 		CapturableStationSiege.create(stationId, nation)
 
@@ -312,6 +327,8 @@ object StationSieges : SLComponent() {
 		}
 
 		player.rewardAchievement(Achievement.CAPTURE_STATION)
+		player.depositMoney(NATIONS_BALANCE.capturableStation.deposit)
+		player.information("Deposit of ${NATIONS_BALANCE.capturableStation.deposit} refunded")
 	}
 
 	private fun isInBigShip(player: Player): Boolean {
