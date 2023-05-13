@@ -3,6 +3,7 @@ version: "Unspecified"
 api-version: "1.19"
 
 bootstrapper: net.horizonsend.ion.server.IonBootstrapper
+loader: net.horizonsend.ion.IonLoader
 main: net.horizonsend.ion.server.IonServer
 load: STARTUP
 

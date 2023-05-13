@@ -1,4 +1,7 @@
+import org.gradle.internal.impldep.com.google.api.client.json.Json
+import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.io.ByteArrayOutputStream
+import java.net.URI
 
 plugins {
 	id("io.papermc.paperweight.userdev") version "1.5.5"
@@ -23,8 +26,11 @@ repositories {
 	maven("https://repo.horizonsend.net/mirror")
 }
 
+val shade by configurations.creating
+configurations.implementation.get().extendsFrom(shade)
+
 dependencies {
-	implementation(project(":common"))
+	shade(project(":common"))
 
 	// Platform
 	paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
@@ -76,6 +82,29 @@ val embedHash = tasks.create("embedHash") {
 	}
 }
 
+val makeLibsFile = tasks.create("makeLibsFile") {
+	doLast {
+		println("making libs file")
+
+		val deps = configurations.implementation.get().dependencies.joinToString(",") {
+			"${it.group}:${it.name}:${it.version}"
+		}
+
+		val repos = repositories.filterIsInstance(MavenArtifactRepository::class.java).joinToString(",") {
+			it.url.toString()
+		}
+
+		File("$buildDir/resources/main").mkdirs()
+		File("$buildDir/resources/main/libs").writeText("$deps|$repos")
+	}
+}
+
 tasks.classes {
 	dependsOn(embedHash)
+	dependsOn(makeLibsFile)
+}
+
+tasks.shadowJar {
+	configurations.clear()
+	configurations.add(shade)
 }
