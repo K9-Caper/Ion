@@ -9,10 +9,6 @@ import org.bukkit.entity.Player
 
 abstract class PyrotechnicMachine : Multiblock(), PowerStoringMultiblock {
 
-	override fun onTransformSign(player: Player, sign: Sign) {
-		super<PowerStoringMultiblock>.onTransformSign(player, sign)
-	}
-
 	override fun LegacyMultiblockShape.buildStructure() {
 		z(+0) {
 			y(+0) {

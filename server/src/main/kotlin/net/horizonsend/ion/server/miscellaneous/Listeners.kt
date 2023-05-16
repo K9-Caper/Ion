@@ -23,7 +23,7 @@ import net.horizonsend.ion.server.miscellaneous.listeners.GameplayTweaksListener
 import net.horizonsend.ion.server.miscellaneous.listeners.HeadListener
 import net.horizonsend.ion.server.miscellaneous.listeners.MiscListeners
 import net.horizonsend.ion.server.miscellaneous.listeners.ResourcePackListener
-import net.starlegacy.feature.multiblock.misc.TractorBeamMultiblock
+import net.starlegacy.feature.multiblock.tractorbeam.TractorBeamMultiblock
 
 val listeners = arrayOf(
 	BlasterListeners(),

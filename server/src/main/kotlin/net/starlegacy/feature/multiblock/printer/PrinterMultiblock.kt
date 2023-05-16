@@ -24,10 +24,6 @@ abstract class PrinterMultiblock : Multiblock(), PowerStoringMultiblock, Furnace
 	protected abstract fun LegacyMultiblockShape.RequirementBuilder.printerMachineryBlock()
 	protected abstract fun LegacyMultiblockShape.RequirementBuilder.printerProductBlock()
 
-	override fun onTransformSign(player: Player, sign: Sign) {
-		super<PowerStoringMultiblock>.onTransformSign(player, sign)
-	}
-
 	override fun LegacyMultiblockShape.buildStructure() {
 		z(+0) {
 			y(-1) {

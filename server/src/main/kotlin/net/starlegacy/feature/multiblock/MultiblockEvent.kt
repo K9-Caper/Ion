@@ -4,7 +4,7 @@ import org.bukkit.Location
 import org.bukkit.event.Event
 
 abstract class MultiblockEvent<T: Multiblock>(
-	val multiblock: T
+	open val multiblock: T
 ) : Event() {
 	abstract val location: Location
 }

@@ -2,10 +2,10 @@ package net.starlegacy.feature.multiblock.tractorbeam
 
 import com.destroystokyo.paper.event.player.PlayerJumpEvent
 import io.papermc.paper.entity.TeleportFlag
-import net.horizonsend.ion.server.features.multiblock.InteractableMultiblock
 import net.starlegacy.feature.multiblock.LegacyMultiblockShape
 import net.starlegacy.feature.multiblock.Multiblock
-import net.horizonsend.ion.server.features.multiblock.Multiblocks
+import net.starlegacy.feature.multiblock.InteractableMultiblock
+import net.starlegacy.feature.multiblock.Multiblocks
 import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.util.LegacyBlockUtils
 import net.starlegacy.util.isStainedGlass
