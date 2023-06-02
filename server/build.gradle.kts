@@ -1,11 +1,8 @@
-import org.gradle.internal.impldep.com.google.api.client.json.Json
-import org.jetbrains.kotlin.gradle.utils.extendsFrom
 import java.io.ByteArrayOutputStream
-import java.net.URI
 
 plugins {
 	id("io.papermc.paperweight.userdev") version "1.5.5"
-	id("com.github.johnrengelman.shadow")
+	//id("com.github.johnrengelman.shadow")
 
 	kotlin("plugin.serialization")
 	kotlin("jvm")
@@ -22,15 +19,13 @@ repositories {
 	maven("https://repo.aikar.co/content/groups/aikar/") // ACF
 	maven("https://repo.alessiodp.com/releases") // Libby (Required by Citizens)
 	maven("https://repo.xenondevs.xyz/releases") // InvUI
-
-	maven("https://repo.horizonsend.net/mirror")
 }
 
 val shade by configurations.creating
 configurations.implementation.get().extendsFrom(shade)
 
 dependencies {
-	shade(project(":common"))
+	implementation(project(":common"))
 
 	// Platform
 	paperweight.paperDevBundle("1.19.4-R0.1-SNAPSHOT")
@@ -86,11 +81,14 @@ val makeLibsFile = tasks.create("makeLibsFile") {
 	doLast {
 		println("making libs file")
 
-		val deps = configurations.implementation.get().dependencies.joinToString(",") {
-			"${it.group}:${it.name}:${it.version}"
-		}
+		val deps =
+			(configurations.implementation.get().dependencies + project(":common").configurations.api.get().dependencies)
+				.filterNot { it.group == "Ion" }
+				.joinToString(",") {
+					"${it.group}:${it.name}:${it.version}"
+				}
 
-		val repos = repositories.filterIsInstance(MavenArtifactRepository::class.java).joinToString(",") {
+		val repos = (repositories + project(":common").repositories).filterIsInstance(MavenArtifactRepository::class.java).joinToString(",") {
 			it.url.toString()
 		}
 
@@ -99,12 +97,11 @@ val makeLibsFile = tasks.create("makeLibsFile") {
 	}
 }
 
+tasks.jar {
+	from(project(":common").sourceSets.main.get().output)
+}
+
 tasks.classes {
 	dependsOn(embedHash)
 	dependsOn(makeLibsFile)
-}
-
-tasks.shadowJar {
-	configurations.clear()
-	configurations.add(shade)
 }

@@ -7,8 +7,6 @@ plugins {
 
 repositories {
 	mavenCentral()
-
-	maven("https://repo.horizonsend.net/mirror")
 }
 
 dependencies {
