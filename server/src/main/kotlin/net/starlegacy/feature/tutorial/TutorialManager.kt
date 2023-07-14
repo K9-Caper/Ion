@@ -70,27 +70,27 @@ object TutorialManager : IonServerComponent() {
 			}
 		}
 
-		listen<StarshipRotateEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.TURN_RIGHT) {
-				event.isCancelled = true
-			}
-		}
-
-		listen<StarshipStartCruisingEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.CRUISE_START) {
-				event.isCancelled = true
-			}
-		}
-
-		listen<StarshipTranslateEvent> { event ->
-			val player = event.player
-			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.SHIFT_FLY_FORWARD
-			) {
-				event.isCancelled = true
-			}
-		}
+//		listen<StarshipRotateEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.TURN_RIGHT) {
+//				event.isCancelled = true
+//			}
+//		}
+//
+//		listen<StarshipStartCruisingEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.CRUISE_START) {
+//				event.isCancelled = true
+//			}
+//		}
+//
+//		listen<StarshipTranslateEvent> { event ->
+//			val player = event.player
+//			if (isWorld(player.world) && (getPhase(player) ?: TutorialPhase.LAST) < TutorialPhase.SHIFT_FLY_FORWARD
+//			) {
+//				event.isCancelled = true
+//			}
+//		}
 
 		// disable all damage in the world
 		listen<EntityDamageEvent> { event ->
@@ -156,7 +156,7 @@ object TutorialManager : IonServerComponent() {
 			}
 		}
 
-// 		TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
+ 		TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
 	}
 
 	private fun clearChunk(chunkReference: WeakReference<Chunk>) {
