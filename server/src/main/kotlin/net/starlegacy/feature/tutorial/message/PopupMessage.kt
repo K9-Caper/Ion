@@ -1,13 +1,32 @@
 package net.starlegacy.feature.tutorial.message
 
-import net.starlegacy.util.colorize
-import net.starlegacy.util.msg
+import io.papermc.paper.util.Tick
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.title.Title
 import org.bukkit.entity.Player
+import java.time.Duration
 
-open class PopupMessage(private val title: String = "", private val subtitle: String = "") :
+open class PopupMessage(private val title: Component = text(""), private val subtitle: Component = text("")) :
 	TutorialMessage("$title $subtitle".split(" ").count().toDouble() * 0.25 + 0.25) {
 	override fun show(player: Player) {
-		player.sendTitle(title.colorize(), subtitle.colorize(), 10, Int.MAX_VALUE - 20, 0)
-		player msg "&r$title &8>> &r$subtitle"
+		player.showTitle(
+			Title.title(
+				title,
+				subtitle,
+				Title.Times.times(
+					Duration.of(10, Tick.tick()),
+					Duration.of(Long.MAX_VALUE - 20, Tick.tick()),
+					Duration.of(0,  Tick.tick()))
+			)
+		)
+
+		player.sendMessage(
+			text()
+				.append(title)
+				.append(text(" >> ", NamedTextColor.GRAY))
+				.append(subtitle)
+		)
 	}
 }

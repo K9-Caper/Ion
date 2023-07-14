@@ -19,6 +19,8 @@ import net.starlegacy.util.action
 import net.starlegacy.util.colorize
 import net.starlegacy.util.msg
 import net.horizonsend.ion.server.miscellaneous.setDisplayNameAndGet
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -32,6 +34,18 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.inventory.ItemStack
 
 enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boolean = true) {
+	GET_OUT_OF_CRYOPOD(
+		PopupMessage(title = Component.text("", NamedTextColor.AQUA))
+	) {
+		override fun setupHandlers() {
+
+		}
+
+		override fun onStart(player: Player) {
+			Bukkit.getPlayer(player.uniqueId)
+		}
+	  },
+
 	GET_SHIP_CONTROLLER(
 		PopupMessage("&a&l&oWelcome!", "&7Welcome to &6Star &eLegacy"),
 		PopupMessage("&3Tutorial", "&4&lYou can leave by doing /tutorialexit"),
