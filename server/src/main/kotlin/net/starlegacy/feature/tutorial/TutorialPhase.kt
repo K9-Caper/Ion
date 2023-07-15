@@ -50,7 +50,8 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 		override fun onStart(player: Player) {
 			Bukkit.getPlayer(player.uniqueId)
 		}
-	  },
+	},
+
 //	GET_SHIP_CONTROLLER(
 //		PopupMessage("&a&l&oWelcome!", "&7Welcome to &6Star &eLegacy"),
 //		PopupMessage("&3Tutorial", "&4&lYou can leave by doing /tutorialexit"),
@@ -205,9 +206,12 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 //			nextStep(player)
 //		}
 //	}
+
 	;
 
 	open fun onStart(player: Player) {}
+
+	open fun onEnd(player: Player) {}
 
 	abstract fun setupHandlers()
 
@@ -254,6 +258,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 			return
 		}
 
+		onEnd(player)
 		TutorialManager.startPhase(player, next)
 	}
 
