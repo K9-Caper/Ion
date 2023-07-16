@@ -8,8 +8,9 @@ import org.bukkit.event.Cancellable
 import org.bukkit.event.HandlerList
 
 class PlayerUseTractorBeamEvent(
-	override val location: Location,
-	override val player: Player
+	override val player: Player,
+	val oldLocation: Location,
+	val newLocation: Location
 ) : PlayerMultiblockEvent<TractorBeamMultiblock>(TractorBeamMultiblock, player), Cancellable {
 	private var cancelled: Boolean = false
 

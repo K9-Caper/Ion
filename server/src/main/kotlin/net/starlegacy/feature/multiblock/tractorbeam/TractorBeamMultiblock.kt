@@ -10,6 +10,7 @@ import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.util.LegacyBlockUtils
 import net.starlegacy.util.isStainedGlass
 import net.starlegacy.util.isWallSign
+import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.BlockFace
 import org.bukkit.block.Sign
@@ -70,13 +71,27 @@ object TractorBeamMultiblock : Multiblock(), InteractableMultiblock, Listener {
 		if (distance < 3) return
 
 		val relative = below.getRelative(BlockFace.DOWN, distance)
+		val relativeLoc = relative.location.toCenterLocation().add(0.0, 1.0, 0.0)
+
 		if (relative.type != Material.AIR) {
-			player.teleport(
-				relative.location.add(0.5, 1.5, 0.5),
-				TeleportCause.PLUGIN,
-				*TeleportFlag.Relative.values()
-			)
+			doTeleport(player, relativeLoc)
 		}
+	}
+
+	fun doTeleport(player: Player, newLoc: Location) {
+		val event = PlayerUseTractorBeamEvent(
+			player,
+			player.location,
+			newLoc
+		)
+
+		if (event.callEvent()) return
+
+		player.teleport(
+			newLoc,
+			TeleportCause.PLUGIN,
+			*TeleportFlag.Relative.values()
+		)
 	}
 
 	fun tryAscend(player: Player) {
@@ -86,6 +101,8 @@ object TractorBeamMultiblock : Multiblock(), InteractableMultiblock, Listener {
 			val block = blockStandingIn.getRelative(BlockFace.UP, i)
 			if (block.type == Material.AIR) continue
 
+			val newLoc = block.location.toCenterLocation().add(0.0, 1.0, 0.0)
+
 			if (block.type == Material.GLASS || block.type.isStainedGlass) {
 				for (face in LegacyBlockUtils.PIPE_DIRECTIONS) {
 					val sign = block.getRelative(face, 2)
@@ -93,11 +110,7 @@ object TractorBeamMultiblock : Multiblock(), InteractableMultiblock, Listener {
 
 					if (Multiblocks[sign.getState(false) as Sign] !is TractorBeamMultiblock) continue
 
-					player.teleport(
-						block.location.add(0.5, 1.5, 0.5),
-						TeleportCause.PLUGIN,
-						*TeleportFlag.Relative.values()
-					)
+					doTeleport(player, newLoc)
 				}
 
 				continue
