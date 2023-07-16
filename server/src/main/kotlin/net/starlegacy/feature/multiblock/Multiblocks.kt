@@ -90,6 +90,7 @@ import net.starlegacy.feature.multiblock.starshipweapon.turret.BottomTriTurretMu
 import net.starlegacy.feature.multiblock.starshipweapon.turret.TopHeavyTurretMultiblock
 import net.starlegacy.feature.multiblock.starshipweapon.turret.TopLightTurretMultiblock
 import net.starlegacy.feature.multiblock.starshipweapon.turret.TopTriTurretMultiblock
+import net.starlegacy.feature.multiblock.startershipdispenser.StarterShipDispenserMultiblock
 import org.bukkit.Location
 import org.bukkit.block.Sign
 import org.bukkit.entity.Player
@@ -201,7 +202,9 @@ object Multiblocks : IonServerComponent() {
 			MiningLaserMultiblockTier2Top,
 			MiningLaserMultiblockTier2Bottom,
 			MiningLaserMultiblockTier3Top,
-			MiningLaserMultiblockTier3Bottom
+			MiningLaserMultiblockTier3Bottom,
+
+			StarterShipDispenserMultiblock
 		)
 	}
 

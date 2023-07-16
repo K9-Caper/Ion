@@ -85,7 +85,10 @@ object TractorBeamMultiblock : Multiblock(), InteractableMultiblock, Listener {
 			newLoc
 		)
 
-		if (event.callEvent()) return
+		event.callEvent()
+
+		println("calling event")
+		if (event.isCancelled) return
 
 		player.teleport(
 			newLoc,

@@ -10,6 +10,7 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.block.Block
 import org.bukkit.block.BlockFace
+import org.bukkit.util.BoundingBox
 import org.bukkit.util.NumberConversions
 import org.bukkit.util.Vector
 import java.util.function.Consumer

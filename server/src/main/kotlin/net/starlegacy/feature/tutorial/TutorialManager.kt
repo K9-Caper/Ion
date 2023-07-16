@@ -1,7 +1,6 @@
 package net.starlegacy.feature.tutorial
 
 import com.destroystokyo.paper.Title
-import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.IonServerComponent
 import net.starlegacy.feature.starship.DeactivatedPlayerStarships
 import net.starlegacy.feature.starship.PilotedStarships
@@ -13,8 +12,6 @@ import net.horizonsend.ion.server.miscellaneous.Vec3i
 import net.starlegacy.util.execConsoleCmd
 import net.starlegacy.util.gray
 import net.starlegacy.util.msg
-import net.starlegacy.util.paste
-import net.starlegacy.util.readSchematic
 import net.starlegacy.util.red
 import net.starlegacy.util.title
 import org.bukkit.Bukkit
@@ -30,11 +27,9 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.event.world.ChunkUnloadEvent
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.UUID
 import kotlin.collections.set
-import kotlin.math.abs
 import net.horizonsend.ion.server.miscellaneous.minecraft
 
 object TutorialManager : IonServerComponent() {

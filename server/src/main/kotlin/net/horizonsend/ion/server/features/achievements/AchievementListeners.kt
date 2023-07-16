@@ -3,7 +3,7 @@ package net.horizonsend.ion.server.features.achievements
 import net.horizonsend.ion.server.legacy.events.EnterPlanetEvent
 import net.horizonsend.ion.common.database.schema.misc.SLPlayer
 import net.starlegacy.feature.misc.CustomItems
-import net.starlegacy.feature.starship.event.StarshipDetectEvent
+import net.starlegacy.feature.starship.event.StarshipDetectedEvent
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
@@ -17,11 +17,6 @@ class AchievementListeners : Listener {
 		val victim = event.player
 
 		if (killer !== victim) killer.rewardAchievement(Achievement.KILL_PLAYER) // Kill a Player Achievement
-	}
-
-	@EventHandler(priority = EventPriority.MONITOR)
-	fun onDetectShip(event: StarshipDetectEvent) {
-		event.player.rewardAchievement(Achievement.DETECT_SHIP)
 	}
 
 	@EventHandler

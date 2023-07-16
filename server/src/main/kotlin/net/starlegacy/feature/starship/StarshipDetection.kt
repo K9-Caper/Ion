@@ -7,6 +7,7 @@ import net.horizonsend.ion.common.database.schema.starships.PlayerStarshipData
 import net.starlegacy.listen
 import net.horizonsend.ion.server.miscellaneous.Vec3i
 import net.horizonsend.ion.server.miscellaneous.bukkitWorld
+import net.starlegacy.feature.starship.event.StarshipDetectedEvent
 import net.starlegacy.util.blockKey
 import net.starlegacy.util.blockKeyX
 import net.starlegacy.util.blockKeyY
@@ -219,12 +220,12 @@ object StarshipDetection : IonServerComponent() {
 			)
 		}
 
-		/*// Allow listeners to cancel the detection
-		if (!StarshipDetectEvent(player, computer, world, blockTypes.keys).callEvent()) {
-				throw StarshipDetection.DetectionFailedException(
+		// Allow listeners to cancel the detection
+		if (!StarshipDetectedEvent(world, data._id).callEvent()) {
+				throw DetectionFailedException(
 						"Detection cancelled"
 				)
-		}*/
+		}
 
 		val coveredChunks = LongOpenHashSet()
 

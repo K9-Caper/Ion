@@ -56,6 +56,8 @@ fun mainThreadCheck() {
 	}
 }
 
+
+/** Delay in ticks **/
 fun Player.worldBorderEffect(duration: Long) {
 	val start = ClientboundSetBorderWarningDistancePacket(WorldBorder().apply { this.warningBlocks = Int.MAX_VALUE })
 	val end = ClientboundSetBorderWarningDistancePacket(
@@ -86,6 +88,8 @@ fun runnable(e: BukkitRunnable.() -> Unit): BukkitRunnable = object : BukkitRunn
 fun <T : Entity> World.castSpawnEntity(location: Location, type: org.bukkit.entity.EntityType) =
 	this.spawnEntity(location, type) as T
 
+
+/** Duration in ticks, -1 to for infinite **/
 fun highlightBlock(bukkitPlayer: Player, pos: BlockPos, duration: Long) {
 	val player = bukkitPlayer.minecraft
 	val conn = player.connection
@@ -99,6 +103,7 @@ fun highlightBlock(bukkitPlayer: Player, pos: BlockPos, duration: Long) {
 	conn.send(ClientboundAddEntityPacket(shulker))
 	shulker.entityData.refresh(player)
 
+	if (duration == -1L) return
 	Tasks.syncDelayTask(duration) { conn.send(ClientboundRemoveEntitiesPacket(shulker.id)) }
 }
 

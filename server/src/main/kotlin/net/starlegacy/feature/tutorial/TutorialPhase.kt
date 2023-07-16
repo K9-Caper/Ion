@@ -1,14 +1,18 @@
 package net.starlegacy.feature.tutorial
 
+import net.horizonsend.ion.common.extensions.success
+import net.horizonsend.ion.server.miscellaneous.highlightBlock
+import net.minecraft.core.BlockPos
 import net.starlegacy.feature.tutorial.message.PopupMessage
 import net.starlegacy.feature.tutorial.message.TutorialMessage
 import net.starlegacy.util.action
 import net.starlegacy.util.msg
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
+import net.starlegacy.feature.multiblock.startershipdispenser.DispenseStarterShipEvent
+import net.starlegacy.feature.multiblock.tractorbeam.PlayerUseTractorBeamEvent
 import net.starlegacy.feature.tutorial.message.ActionMessage
 import net.starlegacy.listen
-import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
@@ -18,7 +22,7 @@ import org.bukkit.potion.PotionEffect.INFINITE_DURATION
 import org.bukkit.potion.PotionEffectType.BLINDNESS
 import org.bukkit.util.BoundingBox
 
-enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boolean = true, showCompleted: Boolean = false) {
+enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boolean = true, val showCompleted: Boolean = false) {
 	WAIT_UNTIL_MOVE(
 		ActionMessage(text("")) { player ->
 			player.lockFreezeTicks(true)
@@ -27,7 +31,6 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 		}
 	) { // Wait until the player tries to move to begin the tutorial
 		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
-			println(player)
 			nextStep(player)
 		}
 	},
@@ -61,7 +64,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 	GET_OUT_OF_CRYOPOD(
 		PopupMessage(title = text("The hangar is up the staircase, outside of the cryo chamber.", NamedTextColor.AQUA))
 	) {
-		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
 
 		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
 			if (box.contains(player.location.toVector())) nextStep(player)
@@ -74,7 +77,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 			subtitle = text("There is a tractor beam.", NamedTextColor.AQUA)
 		)
 	) {
-		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
 
 		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
 			if (box.contains(player.location.toVector())) nextStep(player)
@@ -87,12 +90,32 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 			subtitle = text("Hold your clock, and right click. It'll take you past the staircase.", NamedTextColor.AQUA)
 		)
 	) {
-		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
-
-		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
-			if (box.contains(player.location.toVector())) nextStep(player)
+		override fun setupHandlers() = on<PlayerUseTractorBeamEvent>({ it.player }) { _, player ->
+			println("getting event")
+			nextStep(player)
 		}
 	},
+
+	ENTER_HANGAR(
+		PopupMessage(
+			title = text("Good, that hasn't been destroyed yet.", NamedTextColor.AQUA),
+			subtitle = text("Over in the hangar there's an old cargo shuttle, I'll teach you how to fly it.", NamedTextColor.AQUA)
+		),
+
+		ActionMessage(
+			title = text("", NamedTextColor.AQUA),
+			subtitle = text("", NamedTextColor.AQUA)
+		) { player ->
+			highlightBlock(player, BlockPos(0, 0, 0), 20L * 60L) //TODO
+		}
+	) {
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
+
+		override fun setupHandlers() = on<DispenseStarterShipEvent>({ it.player }) { _, player ->
+			nextStep(player)
+		}
+	},
+
 
 
 //	GET_SHIP_CONTROLLER(
@@ -286,8 +309,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 	}
 
 	protected fun nextStep(player: Player) {
-		println("${player.name} completed $this")
-		player action "&a&oCompleted $this"
+		if (showCompleted) player.success("Completed $this")
 		player.resetTitle()
 
 		val next: TutorialPhase? = byOrdinal[ordinal + 1]

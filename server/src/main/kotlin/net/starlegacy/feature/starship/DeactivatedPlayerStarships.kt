@@ -12,6 +12,7 @@ import net.horizonsend.ion.server.miscellaneous.bukkitWorld
 import net.starlegacy.feature.starship.active.ActivePlayerStarship
 import net.starlegacy.feature.starship.active.ActiveStarshipFactory
 import net.starlegacy.feature.starship.active.ActiveStarships
+import net.starlegacy.feature.starship.event.StarshipReleasedEvent
 import net.starlegacy.listen
 import net.starlegacy.util.Tasks
 import net.starlegacy.util.blockKey
@@ -233,6 +234,8 @@ object DeactivatedPlayerStarships : IonServerComponent() {
 
 			return@getSyncBlocking PlayerStarshipState.createFromActiveShip(starship)
 		}
+
+		StarshipReleasedEvent(starship.controller, starship.dataId)
 
 		saveDeactivatedData(world, starship, state, carriedShipStateMap)
 	}

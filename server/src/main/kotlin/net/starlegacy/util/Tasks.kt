@@ -29,14 +29,20 @@ object Tasks {
 		return Bukkit.getScheduler().runTask(IonServer, Runnable { block() })
 	}
 
+	/** Delay in ticks **/
 	inline fun syncDelay(delay: Long, crossinline block: () -> Unit) { ; syncDelayTask(delay, block); }
+
+	/** Delay in ticks **/
 	inline fun syncDelayTask(delay: Long, crossinline block: () -> Unit): BukkitTask {
 		return Bukkit.getScheduler().runTaskLater(IonServer, Runnable { block() }, delay)
 	}
 
+	/** Delay in ticks **/
 	inline fun syncRepeat(delay: Long, interval: Long, crossinline block: () -> Unit) =
 		syncRepeatTask(delay, interval, block)
 
+
+	/** Delay in ticks **/
 	inline fun syncRepeatTask(delay: Long, interval: Long, crossinline block: () -> Unit): BukkitTask =
 		Bukkit.getScheduler().runTaskTimer(IonServer, Runnable { block() }, delay, interval)
 
