@@ -1,6 +1,7 @@
 package net.starlegacy.feature.tutorial
 
 import com.destroystokyo.paper.Title
+import net.horizonsend.ion.common.extensions.userError
 import net.horizonsend.ion.server.IonServerComponent
 import net.starlegacy.feature.starship.DeactivatedPlayerStarships
 import net.starlegacy.feature.starship.PilotedStarships
@@ -119,22 +120,24 @@ object TutorialManager : IonServerComponent() {
 				return@listen
 			}
 
-			player msg "&eYou unpiloted your starship, stopping tutorial"
-
-			stop(player)
-
-			StarshipDestruction.vanish(event.starship)
 			event.isCancelled = true
 
-			Tasks.syncDelay(10) {
-				player title Title.builder()
-					.title(red("Tutorial Canceled"))
-					.subtitle(gray("Unpiloted (right clicked computer) before the tutorial end"))
-					.fadeIn(10)
-					.stay(40)
-					.fadeOut(10)
-					.build()
-			}
+			player.userError("Please wait until the intro is over to release your starship")
+//
+//			stop(player)
+//
+//			StarshipDestruction.vanish(event.starship)
+//			event.isCancelled = true
+//
+//			Tasks.syncDelay(10) {
+//				player title Title.builder()
+//					.title(red("Tutorial Canceled"))
+//					.subtitle(gray("Unpiloted (right clicked computer) before the tutorial end"))
+//					.fadeIn(10)
+//					.stay(40)
+//					.fadeOut(10)
+//					.build()
+//			}
 		}
 
 		// if someone places a ship computer in an existing one, overwrite it

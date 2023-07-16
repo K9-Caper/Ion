@@ -11,7 +11,7 @@ import org.bukkit.event.HandlerList
 class StarshipDetectedEvent(
 	val world: World,
 	val dataId: Oid<PlayerStarshipData>
-) : Event(), Cancellable {
+) : Event(true), Cancellable {
 	private var cancelled: Boolean = false
 
 	override fun getHandlers(): HandlerList = handlerList

@@ -24,6 +24,9 @@ import java.util.UUID
 object NoobShuttleTracker : IonServerComponent() {
 	val trackedShips = mutableListOf<AbandonedNoobShuttle>()
 
+	/** If the noob has logged out,  **/
+	val toRemove = mutableMapOf<AbandonedNoobShuttle, Long>()
+
 	data class AbandonedNoobShuttle(
 		val player: UUID,
 		val state: PlayerStarshipState,
@@ -50,6 +53,7 @@ object NoobShuttleTracker : IonServerComponent() {
 
 	@EventHandler
 	fun onPlayerLogout(event: PlayerQuitEvent) {
+
 	}
 
 	@EventHandler
@@ -59,6 +63,7 @@ object NoobShuttleTracker : IonServerComponent() {
 		trackedShips.remove(ship)
 	}
 
+	/** The players most likely to immediately quit **/
 	fun isNoob(player: Player): Boolean {
 		if (!player.hasProtection()) return false
 		return player.getStatistic(Statistic.PLAY_ONE_MINUTE) < 20L * 60L * 30L // 30 minutes

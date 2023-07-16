@@ -5,7 +5,6 @@ import net.horizonsend.ion.server.miscellaneous.highlightBlock
 import net.minecraft.core.BlockPos
 import net.starlegacy.feature.tutorial.message.PopupMessage
 import net.starlegacy.feature.tutorial.message.TutorialMessage
-import net.starlegacy.util.action
 import net.starlegacy.util.msg
 import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
@@ -28,7 +27,8 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 			player.lockFreezeTicks(true)
 			player.freezeTicks = 130
 			player.addPotionEffect(BLINDNESS.createEffect(INFINITE_DURATION, 0))
-		}
+		},
+		cancel = false
 	) { // Wait until the player tries to move to begin the tutorial
 		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
 			nextStep(player)
@@ -52,7 +52,8 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 		PopupMessage(
 			title = text("You cryopod has been de-activated.", NamedTextColor.AQUA),
 			subtitle = text("If you hope to survive, make your way to the hangar bay.", NamedTextColor.AQUA)
-		)
+		),
+		cancel = false
 	) {
 		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 
@@ -62,7 +63,8 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 	},
 
 	GET_OUT_OF_CRYOPOD(
-		PopupMessage(title = text("The hangar is up the staircase, outside of the cryo chamber.", NamedTextColor.AQUA))
+		PopupMessage(title = text("The hangar is up the staircase, outside of the cryo chamber.", NamedTextColor.AQUA)),
+		cancel = false
 	) {
 		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
 
@@ -73,9 +75,12 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 
 	TRY_STAIRCASE(
 		PopupMessage(
-			title = text("That does not look good.", NamedTextColor.AQUA),
-			subtitle = text("There is a tractor beam.", NamedTextColor.AQUA)
-		)
+			title = text("The damage is more than I anticipated. We cannot proceed this way.", NamedTextColor.AQUA),
+		),
+		PopupMessage(
+			title = text("There is a backup tractor beam across this hall.", NamedTextColor.AQUA)
+		),
+		cancel = false
 	) {
 		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
 
@@ -101,22 +106,17 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 			title = text("Good, that hasn't been destroyed yet.", NamedTextColor.AQUA),
 			subtitle = text("Over in the hangar there's an old cargo shuttle, I'll teach you how to fly it.", NamedTextColor.AQUA)
 		),
-
 		ActionMessage(
-			title = text("", NamedTextColor.AQUA),
-			subtitle = text("", NamedTextColor.AQUA)
+			title = text("In front of that landing pad, click on the sign to retrieve a shuttle from storage.", NamedTextColor.AQUA),
 		) { player ->
 			highlightBlock(player, BlockPos(0, 0, 0), 20L * 60L) //TODO
-		}
+		},
+		cancel = false
 	) {
-		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0) //TODO
-
 		override fun setupHandlers() = on<DispenseStarterShipEvent>({ it.player }) { _, player ->
 			nextStep(player)
 		}
 	},
-
-
 
 //	GET_SHIP_CONTROLLER(
 //		PopupMessage("&a&l&oWelcome!", "&7Welcome to &6Star &eLegacy"),

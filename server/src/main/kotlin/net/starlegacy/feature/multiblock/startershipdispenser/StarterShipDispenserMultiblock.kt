@@ -2,11 +2,14 @@ package net.starlegacy.feature.multiblock.startershipdispenser
 
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap
+import net.horizonsend.ion.common.extensions.hint
 import net.horizonsend.ion.common.extensions.success
 import net.horizonsend.ion.server.IonServer
 import net.horizonsend.ion.server.miscellaneous.Vec3i
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.Component.text
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextDecoration
 import net.minecraft.world.level.block.state.BlockState
 import net.starlegacy.feature.multiblock.InteractableMultiblock
 import net.starlegacy.feature.multiblock.LegacyMultiblockShape
@@ -31,10 +34,14 @@ import kotlin.math.roundToInt
 object StarterShipDispenserMultiblock : Multiblock(), InteractableMultiblock {
 	override val name: String = "startership"
 	override val signText: Array<Component?> = arrayOf(
-		text("Retrieve Cargo"),
-		text("Shuttle"),
+		text("Retrieve Cargo", NamedTextColor.AQUA).decorate(TextDecoration.BOLD),
+		text("Shuttle", NamedTextColor.AQUA).decorate(TextDecoration.BOLD),
 		null,
-		null
+		text().color(NamedTextColor.GRAY).decorate(TextDecoration.BOLD)
+			.append(text("["))
+			.append(text("STANDBY", NamedTextColor.GOLD))
+			.append(text("]"))
+			.build()
 	)
 
 	const val schemName: String = "StarterShuttle.schem"
@@ -46,7 +53,10 @@ object StarterShipDispenserMultiblock : Multiblock(), InteractableMultiblock {
 	override fun onSignInteract(sign: Sign, player: Player, event: PlayerInteractEvent) {
 		val isClear = checkClear(sign)
 
-		if (isClear) clear(sign)
+		if (isClear) {
+			clear(sign)
+			player.hint("Clearing area.")
+		}
 
 		spawnShuttle(sign)
 		callEvent(sign, player)
@@ -125,17 +135,23 @@ object StarterShipDispenserMultiblock : Multiblock(), InteractableMultiblock {
 		val y = schematic.region.minimumPoint.y
 		val z = if (negativeZ) schematic.region.minimumPoint.z else schematic.region.maximumPoint.z
 
+		println("xyz at ${x}, ${y}, ${z}")
+
 		val offsetX = (x - schematic.region.center.x * 2).roundToInt()
 		val offsetY = (-y.toDouble()).roundToInt()
 		val offsetZ = (z - schematic.region.center.z * 2).roundToInt()
 
-		val targetX = sign.x + direction.modX * 3 + sideDirection.modX
+		println("offset at ${offsetX}, ${offsetY}, ${offsetZ}")
+
+		val targetX = sign.x + direction.modX + sideDirection.modX
 		val targetY = sign.y
-		val targetZ = sign.z + direction.modZ * 3 + sideDirection.modZ
+		val targetZ = sign.z + direction.modZ + sideDirection.modZ
 
-		println("pasting at ${targetX + offsetX}, ${targetY + offsetY}, ${targetZ + offsetZ}")
+		println("target at ${targetX}, ${targetY}, ${targetZ}")
 
-		schematic.paste(sign.world, targetX + offsetX, targetY + offsetY, targetZ + offsetZ, true) //TODO
+		println("pasting at ${targetX + offsetX + x}, ${targetY + offsetY + y}, ${targetZ + offsetZ + z}")
+
+		schematic.paste(sign.world, targetX + offsetX + x, targetY + offsetY + y, targetZ + offsetZ + z, true) //TODO
 	}
 
 	fun callEvent(sign: Sign, player: Player) {
