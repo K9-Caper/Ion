@@ -1,56 +1,99 @@
 package net.starlegacy.feature.tutorial
 
-import net.horizonsend.ion.server.IonServer
-import net.starlegacy.feature.starship.StarshipDestruction
-import net.starlegacy.feature.starship.control.StarshipControl
-import net.starlegacy.feature.starship.event.StarshipComputerOpenMenuEvent
-import net.starlegacy.feature.starship.event.StarshipDetectEvent
-import net.starlegacy.feature.starship.event.StarshipPilotEvent
-import net.starlegacy.feature.starship.event.StarshipRotateEvent
-import net.starlegacy.feature.starship.event.StarshipStartCruisingEvent
-import net.starlegacy.feature.starship.event.StarshipStopCruisingEvent
-import net.starlegacy.feature.starship.event.StarshipTranslateEvent
-import net.starlegacy.feature.starship.event.StarshipUnpilotEvent
-import net.starlegacy.feature.tutorial.message.ActionMessage
 import net.starlegacy.feature.tutorial.message.PopupMessage
 import net.starlegacy.feature.tutorial.message.TutorialMessage
-import net.starlegacy.util.Tasks
 import net.starlegacy.util.action
-import net.starlegacy.util.colorize
 import net.starlegacy.util.msg
-import net.horizonsend.ion.server.miscellaneous.setDisplayNameAndGet
-import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.Component.text
 import net.kyori.adventure.text.format.NamedTextColor
+import net.starlegacy.feature.tutorial.message.ActionMessage
+import net.starlegacy.listen
 import org.bukkit.Bukkit
-import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.Cancellable
 import org.bukkit.event.Event
-import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
-import org.bukkit.event.Listener
-import org.bukkit.event.block.BlockPlaceEvent
-import org.bukkit.event.player.PlayerCommandPreprocessEvent
 import org.bukkit.event.player.PlayerMoveEvent
-import org.bukkit.inventory.ItemStack
+import org.bukkit.potion.PotionEffect.INFINITE_DURATION
+import org.bukkit.potion.PotionEffectType.BLINDNESS
+import org.bukkit.util.BoundingBox
 
-enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boolean = true) {
-	WAIT_UNTIL_MOVE { // Wait until the player tries to move to begin the tutorial
+enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boolean = true, showCompleted: Boolean = false) {
+	WAIT_UNTIL_MOVE(
+		ActionMessage(text("")) { player ->
+			player.lockFreezeTicks(true)
+			player.freezeTicks = 130
+			player.addPotionEffect(BLINDNESS.createEffect(INFINITE_DURATION, 0))
+		}
+	) { // Wait until the player tries to move to begin the tutorial
 		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
+			println(player)
 			nextStep(player)
 		}
-	  },
-	GET_OUT_OF_CRYOPOD(
-		PopupMessage(subtitle = Component.text("", NamedTextColor.AQUA))
+	},
+
+	INTRO(
+		PopupMessage(title = text("Good day.", NamedTextColor.AQUA)),
+		PopupMessage(
+			title = text("You are being woken up prematurely from your cryo-sleep", NamedTextColor.AQUA),
+			subtitle = text("due to an urgent situation.", NamedTextColor.AQUA)
+		),
+		PopupMessage(
+			title = text("Our colony ship is currently under attack by pirates.", NamedTextColor.AQUA),
+			subtitle = text("We can not finish the journey to the Perseus Cluster.", NamedTextColor.AQUA)
+		),
+		ActionMessage(text("")) { player -> // Let the freeze fade, as if coming out of a cryopod.
+			player.lockFreezeTicks(false)
+			player.removePotionEffect(BLINDNESS)
+		},
+		PopupMessage(
+			title = text("You cryopod has been de-activated.", NamedTextColor.AQUA),
+			subtitle = text("If you hope to survive, make your way to the hangar bay.", NamedTextColor.AQUA)
+		)
 	) {
-		override fun setupHandlers() {
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
 
-		}
-
-		override fun onStart(player: Player) {
-			Bukkit.getPlayer(player.uniqueId)
+		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
+			if (box.contains(player.location.toVector())) nextStep(player)
 		}
 	},
+
+	GET_OUT_OF_CRYOPOD(
+		PopupMessage(title = text("The hangar is up the staircase, outside of the cryo chamber.", NamedTextColor.AQUA))
+	) {
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+
+		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
+			if (box.contains(player.location.toVector())) nextStep(player)
+		}
+	},
+
+	TRY_STAIRCASE(
+		PopupMessage(
+			title = text("That does not look good.", NamedTextColor.AQUA),
+			subtitle = text("There is a tractor beam.", NamedTextColor.AQUA)
+		)
+	) {
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+
+		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
+			if (box.contains(player.location.toVector())) nextStep(player)
+		}
+	},
+
+	USE_TRACTOR_BEAM(
+		PopupMessage(
+			title = text("Over to the right, stand under the glass in the ceiling.", NamedTextColor.AQUA),
+			subtitle = text("Hold your clock, and right click. It'll take you past the staircase.", NamedTextColor.AQUA)
+		)
+	) {
+		private val box = BoundingBox(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)
+
+		override fun setupHandlers() = on<PlayerMoveEvent>({ it.player }) { _, player ->
+			if (box.contains(player.location.toVector())) nextStep(player)
+		}
+	},
+
 
 //	GET_SHIP_CONTROLLER(
 //		PopupMessage("&a&l&oWelcome!", "&7Welcome to &6Star &eLegacy"),
@@ -225,29 +268,25 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 	) {
 		val phase = this
 
-		Bukkit.getPluginManager().registerEvents(
-			object : Listener {
-				@EventHandler(priority = EventPriority.NORMAL)
-				fun onEvent(event: T) {
-					val player: Player = getPlayer(event) ?: return
+		listen<T>(EventPriority.NORMAL) { event: T ->
+			val player: Player = getPlayer(event) ?: return@listen
 
-					if (TutorialManager.getPhase(player) == phase) {
-						if (TutorialManager.isReading(player)) {
-							if (event is Cancellable && this@TutorialPhase.cancel) {
-								event.isCancelled = true
-								player msg "&cFinish reading the messages! :P"
-							}
-							return
-						}
-						handler(event, player)
+			if (TutorialManager.getPhase(player) == phase) {
+				if (TutorialManager.isReading(player)) {
+					if (event is Cancellable && this@TutorialPhase.cancel) {
+						event.isCancelled = true
+						player msg "&cFinish reading the messages! :P"
 					}
+
+					return@listen
 				}
-			},
-			IonServer
-		)
+				handler(event, player)
+			}
+		}
 	}
 
 	protected fun nextStep(player: Player) {
+		println("${player.name} completed $this")
 		player action "&a&oCompleted $this"
 		player.resetTitle()
 

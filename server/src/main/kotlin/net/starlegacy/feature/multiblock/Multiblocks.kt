@@ -48,7 +48,7 @@ import net.starlegacy.feature.multiblock.misc.DecomposerMultiblock
 import net.starlegacy.feature.multiblock.misc.MagazineMultiblock
 import net.starlegacy.feature.multiblock.misc.MobDefender
 import net.starlegacy.feature.multiblock.misc.ShipFactoryMultiblock
-import net.starlegacy.feature.multiblock.misc.TractorBeamMultiblock
+import net.starlegacy.feature.multiblock.tractorbeam.TractorBeamMultiblock
 import net.starlegacy.feature.multiblock.navigationcomputer.NavigationComputerMultiblockAdvanced
 import net.starlegacy.feature.multiblock.navigationcomputer.NavigationComputerMultiblockBasic
 import net.starlegacy.feature.multiblock.particleshield.BoxShieldMultiblock

@@ -15,7 +15,7 @@ import net.starlegacy.feature.multiblock.PowerStoringMultiblock
 import net.starlegacy.feature.multiblock.dockingtube.DockingTubeMultiblock
 import net.starlegacy.feature.multiblock.drills.DrillMultiblock
 import net.starlegacy.feature.multiblock.misc.AirlockMultiblock
-import net.starlegacy.feature.multiblock.misc.TractorBeamMultiblock
+import net.starlegacy.feature.multiblock.tractorbeam.TractorBeamMultiblock
 import net.starlegacy.listener.SLEventListener
 import net.starlegacy.util.LegacyBlockUtils
 import net.starlegacy.util.Tasks

@@ -12,6 +12,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage
 import net.horizonsend.ion.server.IonServerComponent
 import net.horizonsend.ion.common.database.schema.misc.SLPlayer
 import net.horizonsend.ion.common.database.slPlayerId
+import net.starlegacy.feature.economy.city.CityNPCs
 import net.starlegacy.listen
 import net.starlegacy.util.Notify
 import net.starlegacy.util.Tasks
@@ -42,6 +43,10 @@ object CombatNPCs : IonServerComponent() {
 	private lateinit var combatNpcRegistry: NPCRegistry
 
 	override fun onEnable() {
+		if (!CityNPCs.isCitizensLoaded) {
+			return
+		}
+
 		// weirdness happens when someone already logged in logs on. this is my hacky fix.
 		val lastJoinMap = mutableMapOf<UUID, Long>()
 
@@ -53,7 +58,7 @@ object CombatNPCs : IonServerComponent() {
 			lastJoinMap[playerId] = System.currentTimeMillis()
 		}
 
-		combatNpcRegistry = CitizensAPI.createNamedNPCRegistry("combat-npcs", MemoryNPCDataStore())
+		Tasks.sync { combatNpcRegistry = CitizensAPI.createNamedNPCRegistry("combat-npcs", MemoryNPCDataStore()) }
 
 		//when a player quits, create a combat npc
 		listen<PlayerQuitEvent> { event ->

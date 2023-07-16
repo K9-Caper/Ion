@@ -46,7 +46,7 @@ import net.starlegacy.command.starship.BlueprintCommand
 import net.starlegacy.command.starship.MiscStarshipCommands
 import net.starlegacy.command.starship.StarshipDebugCommand
 import net.starlegacy.command.starship.StarshipInfoCommand
-import net.starlegacy.command.starship.TutorialStartStopCommand
+import net.starlegacy.command.starship.TutorialCommands
 
 val commands = listOf(
 	GToggleCommand,
@@ -100,7 +100,7 @@ val commands = listOf(
 	MiscStarshipCommands,
 	BlueprintCommand,
 	StarshipDebugCommand,
-	TutorialStartStopCommand,
+	TutorialCommands,
 	StarshipInfoCommand,
 
 	Starships(),

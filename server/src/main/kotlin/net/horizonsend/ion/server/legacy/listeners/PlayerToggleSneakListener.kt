@@ -2,7 +2,7 @@ package net.horizonsend.ion.server.legacy.listeners
 
 import io.papermc.paper.entity.TeleportFlag
 import net.starlegacy.feature.multiblock.Multiblocks
-import net.starlegacy.feature.multiblock.misc.TractorBeamMultiblock
+import net.starlegacy.feature.multiblock.tractorbeam.TractorBeamMultiblock
 import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.listener.SLEventListener
 import net.starlegacy.util.LegacyBlockUtils

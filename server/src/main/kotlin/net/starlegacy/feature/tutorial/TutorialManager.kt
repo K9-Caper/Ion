@@ -153,7 +153,9 @@ object TutorialManager : IonServerComponent() {
 			}
 		}
 
- 		TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
+		Tasks.sync {
+			TutorialPhase.values().forEach(TutorialPhase::setupHandlers)
+		}
 	}
 
 	private fun clearChunk(chunkReference: WeakReference<Chunk>) {
@@ -173,8 +175,14 @@ object TutorialManager : IonServerComponent() {
 
 		playersInTutorials[player] = TutorialPhase.FIRST
 
-		val loc: Location = getSafeLocation()
-		loadShip(loc)
+		val loc = Location(
+			Bukkit.getWorld("Tutorial"),
+			0.0,
+			0.0,
+			0.0
+		)
+
+//		loadShip(loc)
 		player.teleport(loc)
 		player.teleport(loc) // teleport a second time, because, well... minecraft
 
@@ -242,25 +250,6 @@ object TutorialManager : IonServerComponent() {
 	}
 
 	private const val distance = 1000
-
-	private fun getSafeLocation(): Location {
-		var x = distance
-		while (getWorld().players.any { abs(it.location.blockX - x) <= distance }) {
-			x += distance
-		}
-		return Location(getWorld(), x.toDouble() + 0.5, (getWorld().maxHeight / 2).toDouble(), 0.5)
-	}
-
-	private fun loadShip(loc: Location) {
-		val file = File(IonServer.dataFolder, "tutorial_ship.schem")
-
-		if (!file.exists()) {
-			error("${file.absolutePath} doesn't exist!")
-		}
-
-		val clipboard = readSchematic(file) ?: error("Failed to read ${file.path}")
-		clipboard.paste(loc.world, loc.blockX, loc.blockY, loc.blockZ)
-	}
 
 	fun isReading(player: Player): Boolean = (readTimes[player.uniqueId] ?: 0L) >= System.currentTimeMillis()
 

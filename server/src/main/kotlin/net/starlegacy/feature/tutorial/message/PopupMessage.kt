@@ -17,7 +17,7 @@ open class PopupMessage(private val title: Component = text(""), private val sub
 				subtitle,
 				Title.Times.times(
 					Duration.of(10, Tick.tick()),
-					Duration.of(Long.MAX_VALUE - 20, Tick.tick()),
+					Duration.of(Int.MAX_VALUE - 20L, Tick.tick()),
 					Duration.of(0,  Tick.tick()))
 			)
 		)

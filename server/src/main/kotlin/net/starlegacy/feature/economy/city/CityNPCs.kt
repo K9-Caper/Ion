@@ -33,7 +33,7 @@ import java.util.UUID
  * Manages NPCs for cities, handles the synchronization of them with the worlds
  */
 object CityNPCs : IonServerComponent() {
-	private val isCitizensLoaded get() = IonServer.server.pluginManager.isPluginEnabled("Citizens")
+	val isCitizensLoaded get() = IonServer.server.pluginManager.isPluginEnabled("Citizens")
 
 	private lateinit var citizensRegistry: NPCRegistry
 	private val npcTypeMap = mutableMapOf<UUID, CityNPC.Type>()

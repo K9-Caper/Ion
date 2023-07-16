@@ -11,7 +11,7 @@ import org.bukkit.command.BlockCommandSender
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
-object TutorialStartStopCommand : SLCommand() {
+object TutorialCommands : SLCommand() {
 	@Suppress("Unused")
 	@CommandAlias("tutorialstart")
 	@CommandPermission("tutorial.start")
