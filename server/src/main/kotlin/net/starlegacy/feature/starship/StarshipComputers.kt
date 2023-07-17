@@ -35,6 +35,7 @@ import net.starlegacy.feature.nations.region.types.RegionTerritory
 import net.starlegacy.feature.starship.PilotedStarships.getDisplayName
 import net.starlegacy.feature.starship.active.ActiveStarships
 import net.starlegacy.feature.starship.control.StarshipControl
+import net.starlegacy.feature.starship.event.PlayerDetectStarshipEvent
 import net.starlegacy.feature.starship.event.StarshipComputerOpenMenuEvent
 import net.starlegacy.util.MenuHelper
 import net.starlegacy.util.Tasks
@@ -226,6 +227,8 @@ object StarshipComputers : IonServerComponent() {
 					player.serverErrorActionMessage("An error occurred while detecting")
 					return@async
 				}
+
+				PlayerDetectStarshipEvent(player).callEvent()
 
 				player.rewardAchievement(Achievement.DETECT_SHIP)
 
