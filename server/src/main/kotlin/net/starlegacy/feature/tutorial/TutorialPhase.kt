@@ -14,6 +14,7 @@ import net.starlegacy.feature.starship.event.PlayerDetectStarshipEvent
 import net.starlegacy.feature.starship.event.StarshipComputerOpenMenuEvent
 import net.starlegacy.feature.starship.event.StarshipDetectedEvent
 import net.starlegacy.feature.starship.event.StarshipPilotEvent
+import net.starlegacy.feature.starship.event.StarshipRotateEvent
 import net.starlegacy.feature.starship.event.StarshipTranslateEvent
 import net.starlegacy.feature.tutorial.message.ActionMessage
 import net.starlegacy.listen
@@ -190,38 +191,37 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 		}
 	},
 	//TODO explosion effects as you fly through the tunnel
-//	SHIFT_FLY_DOWN(
-//		PopupMessage( "You can shift fly any direction, even down"),
-//		PopupMessage( "Shift flying down lets you land on a planet"),
-//		PopupMessage( "&6&lHold the controller, face down, & sneak"),
-//		cancel = false // let them keep shift flying forward
-//	) {
-//		override fun setupHandlers() = on<StarshipTranslateEvent>({ it.player }) { event, player ->
-//			if (event.y < 0) {
-//				nextStep(player)
-//			} else {
-//				player action "&eYou're moving, but not straight down!"
-//			}
-//		}
-//	},
 
-//	TURN_RIGHT(
-//		PopupMessage("&dRotating", "Besides moving, you can turn your ship"),
-//		PopupMessage("&dRotating", "Ships can face the 4 directions (N/E/S/W)"),
-//		PopupMessage("&dRotating", "To turn your ship, you can use the helm sign"),
-//		PopupMessage("&dRotating", "Right click the sign with [helm] on it"),
-//		PopupMessage("&dRotating", "Then, holding the controller, click again"),
-//		PopupMessage("&dRotating", "Right click to turn right, left click for left"),
-//		PopupMessage("&dRotating", "&6&lHold the controller, right click the helm sign")
-//	) {
-//		override fun setupHandlers() = on<StarshipRotateEvent>({ it.player }) { event, player ->
-//			if (event.clockwise) {
-//				nextStep(player)
-//			}
-//		}
-//	},
+	SHIFT_FLY_UP(
+		PopupMessage(title = text("You'll need to fly down to go any further", NamedTextColor.AQUA)),
+		PopupMessage( title = text("Hold the controller, face down, & sneak")),
+		cancel = false // let them keep shift flying forward
+	) {
+		override fun setupHandlers() = on<StarshipTranslateEvent>({ it.player }) { event, player ->
+			if (event.y < 0) {
+				nextStep(player)
+			}
+		}
+	},
+
+	TURN_RIGHT(
+		PopupMessage(title = text( "Besides moving, you can turn your ship", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "Ships can face the 4 directions (N/E/S/W)", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "To turn your ship, you can use the helm sign", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "Right click the sign with [helm] on it", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "Then, holding the controller, click again", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "Right click to turn right, left click for left", NamedTextColor.AQUA)),
+		PopupMessage(title = text( "&6&lHold the controller, right click the helm sign", NamedTextColor.AQUA)),
+	) {
+		override fun setupHandlers() = on<StarshipRotateEvent>({ it.player }) { event, player ->
+			if (event.clockwise) {
+				nextStep(player)
+			}
+		}
+	},
+
 //	TURN_LEFT(
-//		PopupMessage("&dRotating", "&6&lNow left click the helm sign"),
+//		PopupMessage(title = text("Now left click the helm sign", NamedTextColor.AQUA)),
 //		cancel = false // let them rotate
 //	) {
 //		override fun setupHandlers() = on<StarshipRotateEvent>({ it.player }) { event, player ->
@@ -230,6 +230,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 //			}
 //		}
 //	},
+
 //	CRUISE_START(
 //		PopupMessage("&9Cruising", "Cruise to move steadily over long distances"),
 //		PopupMessage("&9Cruising", "Cruising uses thrusters to determine speed"),
@@ -243,6 +244,7 @@ enum class TutorialPhase(vararg val messages: TutorialMessage, val cancel: Boole
 //			nextStep(player)
 //		}
 //	},
+
 //	CRUISE_STOP(
 //		PopupMessage("&9Stop Cruising", "&6&lLeft click the cruise sign to stop")
 //	) {
