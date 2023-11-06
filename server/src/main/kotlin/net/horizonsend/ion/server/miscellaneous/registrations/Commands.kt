@@ -17,6 +17,7 @@ import net.horizonsend.ion.server.command.misc.BountyCommand
 import net.horizonsend.ion.server.command.misc.DyeCommand
 import net.horizonsend.ion.server.command.misc.GToggleCommand
 import net.horizonsend.ion.server.command.misc.GlobalGameRuleCommand
+import net.horizonsend.ion.server.command.misc.HelpCommand
 import net.horizonsend.ion.server.command.misc.ListCommand
 import net.horizonsend.ion.server.command.misc.MultiblockCommand
 import net.horizonsend.ion.server.command.misc.PlayerInfoCommand
@@ -143,5 +144,7 @@ val commands: List<SLCommand> = listOf(
 	SidebarWaypointsCommand,
     WaypointCommand,
     BountyCommand,
-	BountyAdminCommand
+	BountyAdminCommand,
+
+	HelpCommand
 )
