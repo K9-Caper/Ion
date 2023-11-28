@@ -22,6 +22,7 @@ import net.horizonsend.ion.server.features.customitems.CustomItems.customItem
 import net.horizonsend.ion.server.features.economy.city.TradeCities
 import net.horizonsend.ion.server.features.economy.city.TradeCityData
 import net.horizonsend.ion.server.features.economy.city.TradeCityType
+import net.horizonsend.ion.server.features.nations.gui.guiButton
 import net.horizonsend.ion.server.features.nations.gui.input
 import net.horizonsend.ion.server.features.nations.gui.lore
 import net.horizonsend.ion.server.features.nations.gui.playerClicker
@@ -116,8 +117,8 @@ object Bazaars : IonServerComponent() {
 
 	fun getCityCategories(territoryId: Oid<Territory>, remote: Boolean): List<GuiItem> {
 		return ItemCategory.all().map { category ->
-			GuiItem(category.displayItem) { onClick ->
-				openCategoryMenu(category, territoryId, onClick.playerClicker, remote)
+			guiButton(category.displayItem) {
+				openCategoryMenu(category, territoryId, playerClicker, remote)
 			}
 			.setName(category.displayName)
 		}
@@ -168,7 +169,6 @@ object Bazaars : IonServerComponent() {
 	}
 
 	private fun getCategoryItems(category: ItemCategory, allItems: FindIterable<BazaarItem>, cityInfo: CityInfo?): List<GuiItem> {
-		println(category.items)
 		val items = allItems.filter { category.items.contains(it.itemString) }
 
 		return getGuiItems(items, cityInfo)
@@ -272,6 +272,16 @@ object Bazaars : IonServerComponent() {
 		val city: TradeCityData = TradeCities.getIfCity(Regions[terrId])
 			?: return@async player.serverError("Territory is no longer a city")
 
+		val items = BazaarItem.find(and(BazaarItem::cityTerritory eq terrId, BazaarItem::itemString eq item, BazaarItem::stock gt 0))
+
+		// If ony one item jump straight to the purchase menu
+		if (items.count() == 1) {
+			val bazaarItem = items.first()!!
+
+			Tasks.sync { openPurchaseMenu(player, bazaarItem, SLPlayer.getName(bazaarItem.seller)!!, 0, remote) }
+			return@async
+		}
+
 		MenuHelper.run {
 			val lore = listOf("Left click to sort descending,", "right click to sort ascending.")
 			val titleItems: List<GuiItem> = SortingBy.values().map { newSort ->
@@ -281,8 +291,7 @@ object Bazaars : IonServerComponent() {
 				}.setName("Sort By $newSort").setLore(lore)
 			} + guiButton(Material.IRON_DOOR) { openCityMenu(terrId, playerClicker, remote) }.setName("Go Back")
 
-			val items: List<GuiItem> = BazaarItem
-				.find(and(BazaarItem::cityTerritory eq terrId, BazaarItem::itemString eq item, BazaarItem::stock gt 0))
+			val guiItems: List<GuiItem> = items
 				.let { if (descend) it.descendingSort(sort.property) else it.ascendingSort(sort.property) }
 				.map { bazaarItem ->
 					val itemStack = fromItemString(bazaarItem.itemString)
@@ -305,7 +314,7 @@ object Bazaars : IonServerComponent() {
 			val name = fromItemString(item).displayNameString
 
 			Tasks.sync {
-				player.openPaginatedMenu("$name @ ${city.displayName}", items, titleItems)
+				player.openPaginatedMenu("$name @ ${city.displayName}", guiItems, titleItems)
 			}
 		}
 	}
