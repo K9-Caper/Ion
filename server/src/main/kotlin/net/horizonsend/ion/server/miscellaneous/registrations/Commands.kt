@@ -38,6 +38,8 @@ import net.horizonsend.ion.server.command.nations.roles.NationRoleCommand
 import net.horizonsend.ion.server.command.nations.roles.SettlementRoleCommand
 import net.horizonsend.ion.server.command.nations.settlementZones.SettlementPlotCommand
 import net.horizonsend.ion.server.command.nations.settlementZones.SettlementZoneCommand
+import net.horizonsend.ion.server.command.nations.war.WarAdminCommand
+import net.horizonsend.ion.server.command.nations.war.WarCommand
 import net.horizonsend.ion.server.command.progression.AdvanceAdminCommand
 import net.horizonsend.ion.server.command.progression.BuyXPCommand
 import net.horizonsend.ion.server.command.progression.XPCommand
@@ -148,5 +150,7 @@ val commands: List<SLCommand> = listOf(
     BountyCommand,
 	BountyAdminCommand,
 
-	IonBroadcastCommand
+	IonBroadcastCommand,
+	WarCommand,
+	WarAdminCommand,
 )
