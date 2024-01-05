@@ -42,11 +42,18 @@ class GalacticBroadcastPlugin : IonComponent() {
     }
 
     private fun broadcastNextMessage() {
-        val nextMessage = messages[currentIndex]
-        PLUGIN.proxy.sendMessage(Component.text("<#752082> [Galactic Broadcast] <#DBBCE0> nextMessage"))
+	  val nextMessage = messages[currentIndex]
+          val prefix = Component.text("[Galactic Broadcast]", TextColor.fromHexString("#752082"))
+          PLUGIN.proxy.sendMessage(ofChildren(prefix, text(nextMessage, TextColor.fromHexString("#DBBCE0"))))
+	  
+// old wrong code below	
+//
+//        PLUGIN.proxy.sendMessage(Component.text("<#752082> [Galactic Broadcast] <#DBBCE0> nextMessage"))
 
         currentIndex = (currentIndex + 1) % messages.size
+	    
 // broadcastnextmessage might need fine tuning
+	    
     }
 }
 
