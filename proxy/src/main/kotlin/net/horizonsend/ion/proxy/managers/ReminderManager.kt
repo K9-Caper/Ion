@@ -3,28 +3,31 @@ package net.horizonsend.ion.proxy.managers
 import net.horizonsend.ion.common.IonComponent
 import net.horizonsend.ion.proxy.PLUGIN
 import java.util.concurrent.TimeUnit
+import java.util.*
 
-object ReminderManager : IonComponent() {
-	private val scheduledMessages = listOf<Runnable>(
+// below is glutin code
+//
+//object ReminderManager : IonComponent() {
+//	private val scheduledMessages = listOf<Runnable>(
 //		Runnable { voteReminder() }
-	)
-
-	private const val delay: Long = 900 // Might need to be increased if more messages are added (Currently 15 minutes)
-
-	override fun onEnable() {
-		scheduleReminders()
-	}
-
-	private fun scheduleReminders() {
-		 for (message in scheduledMessages) {
-		 	PLUGIN.proxy.scheduler.repeat(
-				delay,
-		 		(delay / scheduledMessages.size.toLong()) * scheduledMessages.indexOf(message),
-		 		TimeUnit.SECONDS,
-				message
-		 	)
-		 }
-	}
+//	)
+//
+//	private const val delay: Long = 900 // Might need to be increased if more messages are added (Currently 15 minutes)
+//
+//	override fun onEnable() {
+//		scheduleReminders()
+//	}
+//
+//	private fun scheduleReminders() {
+//		 for (message in scheduledMessages) {
+//		 	PLUGIN.proxy.scheduler.repeat(
+//				delay,
+//		 		(delay / scheduledMessages.size.toLong()) * scheduledMessages.indexOf(message),
+//		 		TimeUnit.SECONDS,
+//				message
+//		 	)
+//		 }
+//	}
 // Might bring this back eventually
 //	private fun voteReminder() = transaction {
 //		for (player in PLUGIN.proxy.players) {
