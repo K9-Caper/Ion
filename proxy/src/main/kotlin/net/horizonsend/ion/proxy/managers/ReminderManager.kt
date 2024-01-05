@@ -46,7 +46,9 @@ class GalacticBroadcastPlugin : IonComponent() {
         Bukkit.broadcastMessage(ChatColor.GREEN.toString() + "[Galactic Broadcast] $nextMessage")
 
         currentIndex = (currentIndex + 1) % messages.size
+	    
 // broadcastnextmessage might need fine tuning
+	    
     }
 }
 
