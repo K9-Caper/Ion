@@ -43,7 +43,7 @@ class GalacticBroadcastPlugin : IonComponent() {
 
     private fun broadcastNextMessage() {
         val nextMessage = messages[currentIndex]
-        Bukkit.broadcastMessage(ChatColor.GREEN.toString() + "[Galactic Broadcast] $nextMessage")
+        PLUGIN.proxy.sendMessage(Component.text("<#752082> [Galactic Broadcast] <#DBBCE0> nextMessage"))
 
         currentIndex = (currentIndex + 1) % messages.size
 // broadcastnextmessage might need fine tuning
